@@ -7,9 +7,11 @@ main = do
   contents <- hGetContents handle
   putStr "Part 1: "
   putStr . show $ countMovement isIncreasing $ (measureData . stringsToInts . getFileData) contents
+  -- 1301
   putStr "\n"
   putStr "Part 2: "
   putStr . show $ countMovement isIncreasing $ (measureData . threeMeasurement . stringsToInts . getFileData) contents
+  -- 1346
   putStr "\n"
 
 data Movement = Increasing | Decreasing | Same | None
@@ -44,5 +46,4 @@ threeMeasurement :: [Int] -> [Int]
 threeMeasurement [] = []
 threeMeasurement [_] = []
 threeMeasurement [_, _] = []
-threeMeasurement [x,y,z] = [x + y + z]
 threeMeasurement (x:y:z:xs) = x + y + z : threeMeasurement (y:z:xs)
