@@ -9,6 +9,8 @@ main = do
   putStr . show $ countMovement isIncreasing $ (measureData . stringsToInts . getFileData) contents
   putStr "\n"
   putStr "Part 2: "
+  putStr . show $ countMovement isIncreasing $ (measureData . threeMeasurement . stringsToInts . getFileData) contents
+  putStr "\n"
 
 data Movement = Increasing | Decreasing | Same | None
   deriving (Enum, Show, Eq)
@@ -37,3 +39,10 @@ countMovement f (x:xs) = if f x then countMovement f xs + 1 else countMovement f
 isIncreasing :: Movement -> Bool
 isIncreasing Increasing = True
 isIncreasing _ = False
+
+threeMeasurement :: [Int] -> [Int]
+threeMeasurement [] = []
+threeMeasurement [_] = []
+threeMeasurement [_, _] = []
+threeMeasurement [x,y,z] = [x + y + z]
+threeMeasurement (x:y:z:xs) = x + y + z : threeMeasurement (y:z:xs)
