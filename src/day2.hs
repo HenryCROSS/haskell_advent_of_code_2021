@@ -2,37 +2,40 @@ import System.IO
 
 main :: IO()
 main = do
-  handle <- openFile "../data/day1.txt" ReadMode
+  handle <- openFile "../data/day2.txt" ReadMode
   contents <- hGetContents handle
   let datas = words contents
-  putStrLn "Hello World"
+      result = foldl calculate (0, 0) (parsing datas)
+  print result
+  print $ uncurry (*) result -- 2073315
 
 type HorizontalPos = Int
 type Depth = Int
 type Coordinate = (HorizontalPos, Depth)
 
-data Direction = Horizontal | Vertical deriving (Enum, Eq)
+data Direction = Horizontal | VerticalUp | VerticalDown deriving (Enum, Eq)
 
 goVertically :: Int -> Coordinate -> Coordinate
 goVertically  x (h, d) = (h + x, d)
-  
+
 goHorizontal :: Int -> Coordinate -> Coordinate
 goHorizontal  x (h, d) = (h, d + x)
 
 tokenize :: String -> Direction
 tokenize x
   | x == "forward" = Horizontal
-  | x == "down" = Vertical
-  | x == "up" = Vertical
+  | x == "down" = VerticalDown
+  | x == "up" = VerticalUp
 
 parsing :: [String] -> [(Direction, Int)]
 parsing [] = []
 parsing [x] = []
 parsing (x:y:xs) = (tokenize x, read y :: Int) : parsing xs
 
-calculate :: (Direction, Int) -> Coordinate -> Coordinate
-calculate (direction, num) (h, d)
+calculate :: Coordinate -> (Direction, Int) -> Coordinate
+calculate (h, d) (direction, num)
   | direction == Horizontal = (h + num, d)
-  | direction == Vertical = (h, d + num)
+  | direction == VerticalUp = (h, d - num)
+  | direction == VerticalDown = (h, d + num)
 
 
