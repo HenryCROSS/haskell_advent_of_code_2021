@@ -5,15 +5,23 @@ main = do
   handle <- openFile "../data/day2.txt" ReadMode
   contents <- hGetContents handle
   let datas = words contents
-      result = foldl calculate (0, 0) (parsing datas)
+      result = foldl calculate startingPoint (parsing datas)
+      result2 = foldl calculate' startingPoint' (parsing datas)
   print result
   print $ uncurry (*) result -- 2073315
+  print result2
+  print $ uncurry (\(h, d) _ -> h * d) result2 -- 1840311528
 
 type HorizontalPos = Int
 type Depth = Int
+type Aim = Int
 type Coordinate = (HorizontalPos, Depth)
+type CoordinateAim = (Coordinate, Aim)
 
 data Direction = Horizontal | VerticalUp | VerticalDown deriving (Enum, Eq)
+
+startingPoint :: Coordinate
+startingPoint = (0, 0)
 
 goVertically :: Int -> Coordinate -> Coordinate
 goVertically  x (h, d) = (h + x, d)
@@ -33,9 +41,27 @@ parsing [x] = []
 parsing (x:y:xs) = (tokenize x, read y :: Int) : parsing xs
 
 calculate :: Coordinate -> (Direction, Int) -> Coordinate
-calculate (h, d) (direction, num)
-  | direction == Horizontal = (h + num, d)
-  | direction == VerticalUp = (h, d - num)
-  | direction == VerticalDown = (h, d + num)
+calculate coord (direction, num)
+  | direction == Horizontal = goHorizontal num coord
+  | direction == VerticalUp = goVertically (-num) coord
+  | direction == VerticalDown = goVertically num coord
 
+--
+startingPoint':: CoordinateAim
+startingPoint' = ((0, 0), 0)
+
+aimDown :: CoordinateAim -> Int -> CoordinateAim
+aimDown (coord, a) x = (coord, a + x)
+
+aimUp :: CoordinateAim -> Int -> CoordinateAim
+aimUp (coord, a) x = (coord, a - x)
+
+forwardAiming :: CoordinateAim -> Int -> CoordinateAim
+forwardAiming ((h, d), a) num = ((h + num, num * a + d), a)
+
+calculate' :: CoordinateAim -> (Direction, Int) -> CoordinateAim
+calculate' coordAim (direction, num)
+  | direction == Horizontal = forwardAiming coordAim num
+  | direction == VerticalUp = aimUp coordAim num
+  | direction == VerticalDown = aimDown coordAim num
 
