@@ -13,6 +13,7 @@ main = do
   putStr . show $ countMovement isIncreasing $ (measureData . threeMeasurement . stringsToInts . getFileData) contents
   -- 1346
   putStr "\n"
+  hClose handle
 
 data Movement = Increasing | Decreasing | Same | None
   deriving (Enum, Show, Eq)

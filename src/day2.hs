@@ -11,6 +11,7 @@ main = do
   print $ uncurry (*) result -- 2073315
   print result2
   print $ uncurry (\(h, d) _ -> h * d) result2 -- 1840311528
+  hClose handle
 
 type HorizontalPos = Int
 type Depth = Int
