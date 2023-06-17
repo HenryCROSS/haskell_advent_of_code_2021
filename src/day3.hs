@@ -54,11 +54,6 @@ zipFns = foldl (flip (zipWith (\f x -> f x)))
 -- Part 2
 type Index = Int
 
-removeLines :: String -> [String] -> String
-removeLines t xss 
-  | t == "O" = head $ removeLinesForOxygen xss
-  | t == "CO2" = head $ removeLinesForCO2 xss
-
 removeLinesForCO2 :: [String] -> [String]
 removeLinesForCO2 [] = []
 removeLinesForCO2 [xs] = [xs]
